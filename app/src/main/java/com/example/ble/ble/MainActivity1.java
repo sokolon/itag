@@ -13,10 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class MainActivity1 extends AppCompatActivity {
+import java.util.UUID;
 
-    private Beacon myFirstBeacon;
-    private Beacon mySecondBeacon;
+public class MainActivity1 extends AppCompatActivity {
 
     private Button button;
 
@@ -39,12 +38,8 @@ public class MainActivity1 extends AppCompatActivity {
 
 
     public void openActivity2(View view) {
-        myFirstBeacon = new Beacon("d8955fc0-b261-11e8-b568-0800200c9a66", "beacon1");
-        mySecondBeacon = new Beacon("d8955fc0-b261-11e8-b568-0800200c9a66", "beacon2");
-
-        //using the objects
-        System.out.println("UUID:" + myFirstBeacon.getUUID());
-        System.out.println("Name:" + myFirstBeacon.getName());
+        BeaconStorage.ListOfBeacons.List.add(new Beacon("beaconn1"));
+        BeaconStorage.ListOfBeacons.List.add(new Beacon("beacongf2"));
 
         Intent intent = new Intent(this, Activity2.class);
         startActivity(intent);

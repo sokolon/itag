@@ -1,15 +1,17 @@
 package com.example.ble.ble;
 
+import java.util.UUID;
+
 public class Beacon {
-    String UUID;
+    java.util.UUID UUID;
     String name;
 
-    public Beacon(String UUID, String name) {
-        this.UUID = UUID;
+    public Beacon(String name) {
+        this.UUID = UUID.randomUUID();
         this.name = name;
     }
 
-    public String getUUID() {
+    public UUID getUUID() {
         return UUID;
     }
 

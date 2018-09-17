@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Activity2 extends AppCompatActivity {
         private Button button;
 
@@ -20,19 +23,9 @@ public class Activity2 extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //button = findViewById(R.id.button);
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivity3();
-            }
+        List<String> beaconNames = BeaconStorage.ListOfBeacons.BeaconNames();
 
-        });*/
-
-
-        String[] elementy = {"Beacon 1", "Beacon 2", "Beacon 3", "Beacon 4"};
-
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.elementy_listy, R.id.textView, elementy);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.elementy_listy, R.id.textView, beaconNames);
 
         ListView lista = findViewById(R.id.listView);
 
