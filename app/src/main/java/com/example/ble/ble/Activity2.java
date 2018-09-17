@@ -27,6 +27,7 @@ public class Activity2 extends AppCompatActivity {
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.elementy_listy, R.id.textView, beaconNames);
 
+
         ListView lista = findViewById(R.id.listView);
 
         lista.setAdapter(adapter);
