@@ -98,6 +98,8 @@ public class MainActivity1 extends AppCompatActivity {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+
+
                 // Create a new device item
                 Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
                 // Add it to our adapter
@@ -105,7 +107,7 @@ public class MainActivity1 extends AppCompatActivity {
 
                 // TODO Get from Database
                 if(newDevice.IsTag()){
-                    newDevice.AssignBeacon("This is known Beacon", R.drawable.tv);
+                    newDevice.AssignBeacon("This is known Beacon", R.drawable.plomba);
                 }
             }
 

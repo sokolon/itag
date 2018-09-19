@@ -9,6 +9,7 @@ public class Beacon {
     String Address;
     String Description;
     double Distance;
+    int Rssi;
     int ImageID;
     DistanceRange beaconRange;
 
@@ -16,6 +17,7 @@ public class Beacon {
         this.UUID = UUID.randomUUID();
         this.name = name;
         this.Address = address;
+        this.Rssi = rssi;
         this.Distance = ConvertRssiToDistance(rssi);
         if(this.Distance < 0.5)
         {
@@ -38,6 +40,9 @@ public class Beacon {
         return name;
     }
 
+    public int getRssi(){
+        return Rssi;
+    }
     public String getDescription() { return Description;}
 
     public UUID getUUID() {
@@ -54,7 +59,7 @@ public class Beacon {
 
     // TODO make from DB
     public Boolean IsTag() {
-        return Address.equals("E8:9E:B4:38:D6:2A");
+        return Address.equals("9C:AD:97:C8:EC:A4");
     }
 
     public void AssignBeacon(String description, int imageID)
