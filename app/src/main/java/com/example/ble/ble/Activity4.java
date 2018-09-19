@@ -1,6 +1,14 @@
 package com.example.ble.ble;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ProgressBar;
@@ -8,44 +16,100 @@ import android.widget.TextView;
 
 public class Activity4 extends AppCompatActivity {
 
+    public static int REQUEST_BLUETOOTH = 1;
+
+    TextView distanceView;
+
+    ProgressBar distanceBar;
+
+    BluetoothAdapter BTAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_4);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        TextView distancView = findViewById(R.id.distanceValueTextView);
+        distanceView = findViewById(R.id.distanceValueTextView);
+
+        distanceBar= findViewById(R.id.distanceBar);
         
-        
-        
-        distancView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
+        distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
         setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
-/*        int maxValue=simpleProgressBar.getMax();
-        int progressValue=simpleProgressBar.getProgress();
-        simpleProgressBar.setMax(100);
-        simpleProgressBar.setProgress(50);*/
+
+        scanDistance();
     }
 
     private void setProgress(DistanceRange range){
-        final ProgressBar simpleProgressBar=(ProgressBar) findViewById(R.id.simpleProgressBar);
-        simpleProgressBar.setIndeterminate(false);
         
         switch (range)
         {
             case Far:
-                simpleProgressBar.setProgress(33);
+                distanceBar.setProgress(33);
                 break;
             case Near:
-                simpleProgressBar.setProgress(66);
+                distanceBar.setProgress(66);
                 break;
             case Immediate:
-                simpleProgressBar.setProgress(100);
+                distanceBar.setProgress(100);
                 break;
                 default:
                     throw new IndexOutOfBoundsException("Did not implenent " + range);
         }
     }
 
+    private void scanDistance() {
+
+        BTAdapter = BluetoothAdapter.getDefaultAdapter();
+        // Phone does not support Bluetooth so let the user know and exit.
+        if (BTAdapter == null) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Not compatible")
+                    .setMessage("Your phone does not support Bluetooth")
+                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+        }
+
+        if (BTAdapter.isEnabled()) {
+            Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBT, REQUEST_BLUETOOTH);
+
+            IntentFilter ifilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            this.registerReceiver(bReciever, ifilter);
+            BTAdapter.startDiscovery();
+        }
+    }
+
+    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(!device.getAddress().equals(BeaconStorage.ListOfBeacons.getActiveBeacon().Address))
+                {
+                    return;
+                }
+
+                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+
+                BeaconStorage.ListOfBeacons.getActiveBeacon().setRssi(rssi);
+                distanceView.setText(Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance()));
+                setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().getBeaconRange());
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        BTAdapter.cancelDiscovery();
+        super.onDestroy();
+    }
 }

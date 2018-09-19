@@ -18,7 +18,11 @@ public class Beacon {
         this.name = name;
         this.Address = address;
         this.Rssi = rssi;
-        this.Distance = ConvertRssiToDistance(rssi);
+        SetBeaconRange();
+    }
+
+    private void SetBeaconRange(){
+        this.Distance = ConvertRssiToDistance();
         if(this.Distance < 0.5)
         {
             beaconRange = DistanceRange.Immediate;
@@ -29,20 +33,22 @@ public class Beacon {
         }
     }
 
-    private double ConvertRssiToDistance(int rssi){
+    private double ConvertRssiToDistance(){
         // TODO Verify it
         int txPower = -55;
 
-        return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
+        return Math.pow(10d, ((double) txPower - Rssi) / (10 * 2));
     }
 
     public String getName() {
         return name;
     }
 
-    public int getRssi(){
-        return Rssi;
+    public void setRssi(int rssi){
+        Rssi = rssi;
+        SetBeaconRange();
     }
+
     public String getDescription() { return Description;}
 
     public UUID getUUID() {

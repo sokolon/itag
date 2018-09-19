@@ -33,8 +33,6 @@ import java.util.UUID;
 public class MainActivity1 extends AppCompatActivity {
 
     private Button button;
-    public static int REQUEST_BLUETOOTH = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,75 +47,10 @@ public class MainActivity1 extends AppCompatActivity {
             public void onClick(View view) {
 
                 BeaconStorage.ListOfBeacons.List.clear();
-                getAllBeacons();
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        openActivity2();
-                    }
-                }, 500);
+                openActivity2();
             }
         });
-
     }
-
-    private void getAllBeacons() {
-
-        BluetoothAdapter BTAdapter = BluetoothAdapter.getDefaultAdapter();
-        // Phone does not support Bluetooth so let the user know and exit.
-        if (BTAdapter == null) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Not compatible")
-                    .setMessage("Your phone does not support Bluetooth")
-                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.exit(0);
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-
-        }
-
-            if (BTAdapter.isEnabled()) {
-                Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBT, REQUEST_BLUETOOTH);
-
-                Log.d("DEVICELIST", "Super called for DeviceListFragment onCreate\n");
-
-                IntentFilter ifilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                this.registerReceiver(bReciever, ifilter);
-                BTAdapter.startDiscovery();
-            }
-    }
-
-    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-
-
-                // Create a new device item
-                Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
-                // Add it to our adapter
-                BeaconStorage.ListOfBeacons.List.add(newDevice);
-
-                // TODO Get from Database
-                if(newDevice.IsTag()){
-                    newDevice.AssignBeacon("This is known Beacon", R.drawable.plomba);
-                }
-            }
-
-        }
-    };
-
-
-
-
-
 
 
     public void openActivity2() {
