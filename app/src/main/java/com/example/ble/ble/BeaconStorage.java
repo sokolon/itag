@@ -8,6 +8,17 @@ public final class BeaconStorage {
     public static class ListOfBeacons {
         public static LinkedList<Beacon> List = new LinkedList<Beacon>();
 
+        public static long ActiveId = -1;
+
+        public static Beacon getActiveBeacon(){
+            if(ActiveId >= 0 && List.size() > ActiveId)
+            {
+                return List.get((int)ActiveId);
+            }
+
+            return null;
+        }
+
         public static LinkedList<String> BeaconNames () {
                  LinkedList<String> names = new LinkedList<String>();
 

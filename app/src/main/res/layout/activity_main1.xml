@@ -40,7 +40,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="186dp"
         android:onClick="openActivity2"
-        android:text="Open List" />
+        android:text="Lets scan!" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayout"

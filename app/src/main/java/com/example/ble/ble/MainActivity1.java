@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.content.DialogInterface;
 import android.bluetooth.BluetoothDevice;
+import android.widget.ProgressBar;
+
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -45,13 +48,15 @@ public class MainActivity1 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                BeaconStorage.ListOfBeacons.List.clear();
                 getAllBeacons();
-                
-                
 
-
-
-                openActivity2(view);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        openActivity2();
+                    }
+                }, 500);
             }
         });
 
@@ -59,10 +64,6 @@ public class MainActivity1 extends AppCompatActivity {
 
     private void getAllBeacons() {
 
-      //  BeaconStorage.ListOfBeacons.List.add(new Beacon("beaconn1"));
-       // BeaconStorage.ListOfBeacons.List.add(new Beacon("beacongf2"));
-
-        //metoda na bluta
         BluetoothAdapter BTAdapter = BluetoothAdapter.getDefaultAdapter();
         // Phone does not support Bluetooth so let the user know and exit.
         if (BTAdapter == null) {
@@ -96,16 +97,28 @@ public class MainActivity1 extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
                 // Create a new device item
-                Beacon newDevice = new Beacon(device.getName(), device.getAddress());
+                Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
                 // Add it to our adapter
                 BeaconStorage.ListOfBeacons.List.add(newDevice);
+
+                // TODO Get from Database
+                if(newDevice.IsTag()){
+                    newDevice.AssignBeacon("This is known Beacon", R.drawable.tv);
+                }
             }
+
         }
     };
 
 
-    public void openActivity2(View view) {
+
+
+
+
+
+    public void openActivity2() {
 
 
         Intent intent = new Intent(this, Activity2.class);

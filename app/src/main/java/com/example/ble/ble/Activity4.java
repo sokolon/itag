@@ -1,11 +1,10 @@
 package com.example.ble.ble;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class Activity4 extends AppCompatActivity {
 
@@ -16,14 +15,37 @@ public class Activity4 extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        TextView distancView = findViewById(R.id.distanceValueTextView);
+        
+        
+        
+        distancView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
+        setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
+/*        int maxValue=simpleProgressBar.getMax();
+        int progressValue=simpleProgressBar.getProgress();
+        simpleProgressBar.setMax(100);
+        simpleProgressBar.setProgress(50);*/
+    }
+
+    private void setProgress(DistanceRange range){
+        final ProgressBar simpleProgressBar=(ProgressBar) findViewById(R.id.simpleProgressBar);
+        simpleProgressBar.setIndeterminate(false);
+        
+        switch (range)
+        {
+            case Far:
+                simpleProgressBar.setProgress(33);
+                break;
+            case Near:
+                simpleProgressBar.setProgress(66);
+                break;
+            case Immediate:
+                simpleProgressBar.setProgress(100);
+                break;
+                default:
+                    throw new IndexOutOfBoundsException("Did not implenent " + range);
+        }
     }
 
 }

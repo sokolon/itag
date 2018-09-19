@@ -35,6 +35,7 @@ public class Activity2 extends AppCompatActivity {
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                BeaconStorage.ListOfBeacons.ActiveId = l;
                 openActivity3(view);
             }
         });
