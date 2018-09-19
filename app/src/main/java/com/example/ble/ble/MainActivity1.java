@@ -38,7 +38,7 @@ public class MainActivity1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         button = findViewById(R.id.button);
@@ -54,8 +54,6 @@ public class MainActivity1 extends AppCompatActivity {
 
 
     public void openActivity2() {
-
-
         Intent intent = new Intent(this, Activity2.class);
         startActivity(intent);
 
@@ -82,4 +80,4 @@ public class MainActivity1 extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    }
+}

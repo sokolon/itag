@@ -14,7 +14,7 @@ public class Beacon {
     DistanceRange beaconRange;
 
     public Beacon(String name, String address, int rssi) {
-        this.UUID = UUID.randomUUID();
+        this.UUID = java.util.UUID.randomUUID();
         this.name = name;
         this.Address = address;
         this.Rssi = rssi;

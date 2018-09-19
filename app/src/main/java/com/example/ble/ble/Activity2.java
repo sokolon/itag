@@ -82,7 +82,6 @@ public class Activity2 extends AppCompatActivity {
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-
         }
 
         if (BTAdapter.isEnabled()) {
