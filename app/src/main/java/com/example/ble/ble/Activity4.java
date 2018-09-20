@@ -2,6 +2,8 @@ package com.example.ble.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +27,11 @@ public class Activity4 extends AppCompatActivity {
     ProgressBar distanceBar;
 
     BluetoothAdapter BTAdapter;
+    //BluetoothLeScanner BLEsScanner;
+    //ScanCallback scan;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +39,23 @@ public class Activity4 extends AppCompatActivity {
         setContentView(R.layout.activity_4);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //registerReceiver(receiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 
         Button button = findViewById(R.id.scanButton);
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+               // BTAdapter.cancelDiscovery();
+
+                BTAdapter.startDiscovery();
                 if(BTAdapter.isDiscovering())
                 {
                     return;
                 }
-
-                BTAdapter.startDiscovery();
             }
         });
+
 
 
         distanceView = findViewById(R.id.distanceValueTextView);
@@ -55,10 +65,25 @@ public class Activity4 extends AppCompatActivity {
         distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
         setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
 
+        BeaconStorage.ListOfBeacons.getActiveBeacon().getRSSI();
+
         scanDistance();
 
     }
 
+    private final BroadcastReceiver receiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            if(BluetoothDevice.ACTION_FOUND.equals(action)) {
+                if(BluetoothDevice.EXTRA_NAME == BeaconStorage.ListOfBeacons.getActiveBeacon().getName()){
+                    int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                    distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getRSSI())));
+                }
+            }
+        }
+    };
 
     private void setProgress(DistanceRange range){
         

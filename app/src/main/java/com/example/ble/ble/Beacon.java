@@ -43,6 +43,7 @@ public class Beacon {
     public String getName() {
         return name;
     }
+    public int getRSSI() { return Rssi; }
 
     public void setRssi(int rssi){
         Rssi = rssi;
