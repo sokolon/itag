@@ -10,23 +10,22 @@ public final class BeaconStorage {
 
         public static long ActiveId = -1;
 
-        public static Beacon getActiveBeacon(){
-            if(ActiveId >= 0 && List.size() > ActiveId)
-            {
-                return List.get((int)ActiveId);
+        public static Beacon getActiveBeacon() {
+            if (ActiveId >= 0 && List.size() > ActiveId) {
+                return List.get((int) ActiveId);
             }
 
             return null;
         }
 
-        public static LinkedList<String> BeaconNames () {
-                 LinkedList<String> names = new LinkedList<String>();
+        public static LinkedList<String> BeaconNames = new LinkedList<>();
+
+        public static void UpdateBeaconNames () {
+            BeaconNames.clear();
 
             for (Beacon beacon : List) {
-                names.add(beacon.name);
+                BeaconNames.add(beacon.name);
             }
-
-            return names;
         }
     }
 }

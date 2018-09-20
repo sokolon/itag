@@ -37,7 +37,7 @@ public class Activity2 extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        beaconNames = BeaconStorage.ListOfBeacons.BeaconNames();
+        beaconNames = BeaconStorage.ListOfBeacons.BeaconNames;
 
         adapter = new ArrayAdapter(this, R.layout.elementy_listy, R.id.textView, beaconNames);
 
@@ -108,6 +108,7 @@ public class Activity2 extends AppCompatActivity {
                 Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
                 // Add it to our adapter
                 BeaconStorage.ListOfBeacons.List.add(newDevice);
+                BeaconStorage.ListOfBeacons.UpdateBeaconNames();
                 adapter.notifyDataSetChanged();
 
                 // TODO Get from Database

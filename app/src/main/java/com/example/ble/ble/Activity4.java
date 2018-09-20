@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,6 +33,20 @@ public class Activity4 extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Button button = findViewById(R.id.scanButton);
+        button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if(BTAdapter.isDiscovering())
+                {
+                    return;
+                }
+
+                BTAdapter.startDiscovery();
+            }
+        });
+
 
         distanceView = findViewById(R.id.distanceValueTextView);
 
@@ -40,7 +56,9 @@ public class Activity4 extends AppCompatActivity {
         setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
 
         scanDistance();
+
     }
+
 
     private void setProgress(DistanceRange range){
         
