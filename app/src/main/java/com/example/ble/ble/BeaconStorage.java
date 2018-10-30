@@ -6,7 +6,7 @@ public final class BeaconStorage {
     private BeaconStorage() {}
 
     public static class ListOfBeacons {
-        public static LinkedList<Beacon> List = new LinkedList<Beacon>();
+        public static BeaconList List = new BeaconList();
 
         public static long ActiveId = -1;
 

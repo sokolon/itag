@@ -1,6 +1,7 @@
 package com.example.ble.ble;
 
 import java.util.UUID;
+import java.util.jar.Attributes;
 
 public class Beacon {
 
@@ -14,6 +15,11 @@ public class Beacon {
     DistanceRange beaconRange;
 
     public Beacon(String name, String address, int rssi) {
+        if(name == null || name.isEmpty())
+        {
+            name = address;
+        }
+
         this.UUID = java.util.UUID.randomUUID();
         this.name = name;
         this.Address = address;
@@ -22,14 +28,15 @@ public class Beacon {
     }
 
     private void SetBeaconRange(){
-        this.Distance = ConvertRssiToDistance();
-        if(this.Distance < 0.5)
+        if(this.Rssi > -60)
         {
             beaconRange = DistanceRange.Immediate;
-        } else if (this.Distance < 1.5) {
+        } else if (this.Rssi > -80) {
             beaconRange = DistanceRange.Near;
-        } else {
+        } else if (this.Rssi > -100){
             beaconRange = DistanceRange.Far;
+        } else {
+            beaconRange = DistanceRange.FarerThanFar;
         }
     }
 
@@ -38,10 +45,11 @@ public class Beacon {
         int txPower = -55;
 
         return Math.pow(10d, ((double) txPower - Rssi) / (10 * 2));
+
     }
 
     public String getName() {
-        return name;
+        return "issrfid";
     }
 
     public void setRssi(int rssi){
@@ -57,24 +65,24 @@ public class Beacon {
 
     public String getAddress() { return Address;}
 
-    public double getDistance() { return Distance; }
+    public double getDistance() {
+        return Math.round(Distance * 100.0) / 100.0;
+    }
 
     public DistanceRange getBeaconRange() {
         return beaconRange;
     }
 
-    // TODO make from DB
-    public Boolean IsTag() {
-        return Address.equals("9C:AD:97:C8:EC:A4");
-    }
-
-    public void AssignBeacon(String description, int imageID)
+    public void AssignBeacon(String description, int imageID, String name)
     {
         this.Description = description;
         this.ImageID = imageID;
+        this.name = name;
     }
 
     public int getImage() {
         return ImageID;
     }
+
+    public int getRssi() { return this.Rssi; }
 }

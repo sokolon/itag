@@ -16,9 +16,17 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class Activity4 extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-    public static int REQUEST_BLUETOOTH = 1;
+import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
+import no.nordicsemi.android.support.v18.scanner.ScanCallback;
+import no.nordicsemi.android.support.v18.scanner.ScanFilter;
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
+import no.nordicsemi.android.support.v18.scanner.ScanSettings;
+
+public class Activity4 extends AppCompatActivity {
 
     TextView distanceView;
 
@@ -26,33 +34,21 @@ public class Activity4 extends AppCompatActivity {
 
     BluetoothAdapter BTAdapter;
 
+    Boolean isScanning;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isScanning = false;
         setContentView(R.layout.activity_4);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button button = findViewById(R.id.scanButton);
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if(BTAdapter.isDiscovering())
-                {
-                    return;
-                }
-
-                BTAdapter.startDiscovery();
-            }
-        });
-
-
         distanceView = findViewById(R.id.distanceValueTextView);
 
-        distanceBar= findViewById(R.id.distanceBar);
-        
-        distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
+        distanceBar = findViewById(R.id.distanceBar);
+
+        distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getRssi())));
         setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
 
         scanDistance();
@@ -60,10 +56,11 @@ public class Activity4 extends AppCompatActivity {
     }
 
 
-    private void setProgress(DistanceRange range){
-        
-        switch (range)
-        {
+    private void setProgress(DistanceRange range) {
+
+        switch (range) {
+            case FarerThanFar:
+                distanceBar.setProgress(0);
             case Far:
                 distanceBar.setProgress(33);
                 break;
@@ -73,61 +70,57 @@ public class Activity4 extends AppCompatActivity {
             case Immediate:
                 distanceBar.setProgress(100);
                 break;
-                default:
-                    throw new IndexOutOfBoundsException("Did not implenent " + range);
+            default:
+                throw new IndexOutOfBoundsException("Did not implenent " + range);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        scanDistance();
+    }
+
+    @Override
+    protected void onPause() {
+        if(isScanning) {
+            BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
+            scanner.stopScan(mScanCallback);
+        }
+        super.onPause();
     }
 
     private void scanDistance() {
-
-        BTAdapter = BluetoothAdapter.getDefaultAdapter();
-        // Phone does not support Bluetooth so let the user know and exit.
-        if (BTAdapter == null) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Not compatible")
-                    .setMessage("Your phone does not support Bluetooth")
-                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.exit(0);
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-
+        if(isScanning)
+        {
+            return;
         }
 
-        if (BTAdapter.isEnabled()) {
-            Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBT, REQUEST_BLUETOOTH);
-
-            IntentFilter ifilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            this.registerReceiver(bReciever, ifilter);
-            BTAdapter.startDiscovery();
-        }
+        final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
+        final ScanSettings settings = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setReportDelay(1000).setUseHardwareBatchingIfSupported(false).setUseHardwareFilteringIfSupported(false).build();
+        final List<ScanFilter> filters = new ArrayList<>();
+        filters.add(new ScanFilter.Builder().setDeviceAddress(BeaconStorage.ListOfBeacons.getActiveBeacon().getAddress()).build()); //.setServiceUuid(mUuid).build());
+        scanner.startScan(filters, settings, mScanCallback);
+        isScanning = true;
     }
 
-    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(!device.getAddress().equals(BeaconStorage.ListOfBeacons.getActiveBeacon().Address))
-                {
-                    return;
-                }
 
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+    private ScanCallback mScanCallback = new ScanCallback() {
 
-                BeaconStorage.ListOfBeacons.getActiveBeacon().setRssi(rssi);
-                distanceView.setText(Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance()));
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            for (no.nordicsemi.android.support.v18.scanner.ScanResult result : results){
+
+                BeaconStorage.ListOfBeacons.getActiveBeacon().setRssi(result.getRssi());
+                distanceView.setText(Double.toString(result.getRssi()));
                 setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().getBeaconRange());
+
+                TextView updateView = findViewById(R.id.imthere);
+                updateView.setText("Update at " + Calendar.getInstance().getTime() );
             }
+
+            super.onBatchScanResults(results);
         }
     };
-
-    @Override
-    protected void onDestroy() {
-        BTAdapter.cancelDiscovery();
-        super.onDestroy();
-    }
 }
