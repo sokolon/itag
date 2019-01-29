@@ -31,7 +31,7 @@ public class Beacon {
         if(this.Rssi > -60)
         {
             beaconRange = DistanceRange.Immediate;
-        } else if (this.Rssi > -80) {
+        } else if (this.Rssi > -60) {
             beaconRange = DistanceRange.Near;
         } else if (this.Rssi > -100){
             beaconRange = DistanceRange.Far;
@@ -48,8 +48,9 @@ public class Beacon {
 
     }
 
-    public String getName() {
-        return "issrfid";
+    public String getName()
+    {
+        return name;
     }
 
     public void setRssi(int rssi){

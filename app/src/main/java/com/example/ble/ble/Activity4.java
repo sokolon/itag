@@ -55,12 +55,12 @@ public class Activity4 extends AppCompatActivity {
 
     }
 
-
     private void setProgress(DistanceRange range) {
 
         switch (range) {
             case FarerThanFar:
                 distanceBar.setProgress(0);
+                break;
             case Far:
                 distanceBar.setProgress(33);
                 break;

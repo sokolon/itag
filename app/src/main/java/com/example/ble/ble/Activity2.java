@@ -28,13 +28,25 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,21 +56,19 @@ import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanFilter;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
+import static com.example.ble.ble.DistanceRange.Immediate;
+
 public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię Activity2, zaw w sobie AppCompatActivity
-    private ArrayAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
+    private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private List<String> beaconNames; // analogicznie
     private BluetoothAdapter btAdapter; // analogicznie
     private boolean mIsScanning = false; //typ prawda/falsz
-
     private Button mScanButton;
-
     private Button button_scan_again; //zadeklarowałam mój button nowy który jest na activity2
-
-
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number // zmienna typu private final static int, nazwa REQUEST...(), wart =76
-
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
-
+    Boolean isScanning;
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -68,6 +78,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                     Toast.LENGTH_SHORT).show(); // długość czasu trwania tej informacji
             finish();
         }
+
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = bluetoothManager.getAdapter(); //jakiś manager, punkt zarządzania urządzeniami bluetooth który jest niezbędny do wyszukiwania i zarządzania bluetooth
@@ -82,20 +93,17 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         setSupportActionBar(toolbar); //zainicjowanie actionbarra
 
-        beaconNames = BeaconStorage.ListOfBeacons.BeaconNames; //deklaracja i inicjalizacja zmiennej nazwy beaconow gdzie wartos znajdziemy w pamieci beacona, z listy beaconow a na koncu pobieramy names
+        beaconNames = BeaconStorage.ListOfBeacons.BeaconNames;
 
-        adapter = new ArrayAdapter(this, R.layout.elementy_listy, R.id.textView, beaconNames); // INICJALIZACJA ADAPTERA
-        // za kazdym razem gdy chcemuy utworzyc przewijana liste uzywamy listview za pomoca
-        //adaptera. Najprostszym jest ArrayAdapter ponieważ adapter przekształca ArrayList obiektów w View items załadowanych do kontenera/zbiornika/zbioru  ListView.
-        //ArrayAdapter mieści się pomiędzy ArrayList (źródło danych) i ListView (reprezentacja wizualna) i konfiguruje dwa aspekty:
-        //Która tablica ma być używana jako źródło danych dla listy
-        //Jak przekonwertować dowolny element w tablicy na odpowiedni obiekt View
+        adapter = new CustomAdapter(BeaconStorage.ListOfBeacons.List,getApplicationContext());
 
         ListView list = findViewById(R.id.listView); //połączenie listview z adapterem wyzej
 
-        list.setAdapter(adapter); //tak samo jw
+        list.setAdapter(adapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() { //pobieranie wartosci i wrzucanie na liste
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //onItemClick - klikanie na itemy
@@ -104,6 +112,52 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                 BeaconStorage.ListOfBeacons.ActiveId = l; // lista beacnow
                 openActivity3(view);
             }
+        });
+
+    }
+
+    public void ShowPopupWindow(Beacon beacon) {
+
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        //show image
+        final ImageView ImageView = popupView.findViewById(R.id.imageView3);
+        ImageView.setBackgroundResource(beacon.getImage());
+
+        //create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        //show the popup window
+        LinearLayout layout = new LinearLayout(this);
+        popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+
+        BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
+        scanner.stopScan(mScanCallback);
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+            @Override
+            public void onDismiss() {
+
+                scanLeDevice();
+
+            }
+
         });
     }
 
@@ -148,7 +202,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
         final ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setReportDelay(1000).setUseHardwareBatchingIfSupported(false).setUseHardwareFilteringIfSupported(false).build();
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setReportDelay(2000).setUseHardwareBatchingIfSupported(false).setUseHardwareFilteringIfSupported(false).build();
+
         final List<ScanFilter> filters = new ArrayList<>();
         filters.add(new ScanFilter.Builder().build());
         scanner.startScan(filters, settings, mScanCallback);
@@ -159,23 +214,50 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         @Override
         public void onBatchScanResults(List<no.nordicsemi.android.support.v18.scanner.ScanResult> results) {
-            BeaconStorage.ListOfBeacons.List.clear();
-            for (no.nordicsemi.android.support.v18.scanner.ScanResult result : results){
+            for (no.nordicsemi.android.support.v18.scanner.ScanResult result : results)
+
+            {
                 // Create a new device item
                 BluetoothDevice btDevice = result.getDevice();
                 Beacon newDevice = new Beacon(btDevice.getName(), btDevice.getAddress(), result.getRssi());
+
                 // Add it to our adapter
+
+                if(newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB"))
+                {
+                    newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
+                }
+                else if(newDevice.getAddress().equals("F4:6A:1C:97:E3:D7"))
+                {
+                    newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
+                }
+
+                else if(newDevice.getAddress().equals(("C1:6C:87:52:E6:83")))
+                {
+                    newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
+                }
                 BeaconStorage.ListOfBeacons.List.add(newDevice);
-                BeaconStorage.ListOfBeacons.UpdateBeaconNames();
+
+                if (newDevice.getBeaconRange()== DistanceRange.Immediate)
+                {
+                   ShowPopupWindow(newDevice);
+                }
+
             }
             adapter.notifyDataSetChanged();
+
             super.onBatchScanResults(results);
         }
 
     };
 
 
-}
+
+    }
+
+
+
+
 
 
 
