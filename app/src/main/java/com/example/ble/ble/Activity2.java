@@ -9,8 +9,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -57,6 +56,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanFilter;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 import static com.example.ble.ble.DistanceRange.Immediate;
+import static com.example.ble.ble.R.id.toolbar;
 
 public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię Activity2, zaw w sobie AppCompatActivity
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
@@ -146,8 +146,9 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
             }
         });
 
-        BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
-        scanner.stopScan(mScanCallback);
+      /*  BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();*/
+        btAdapter.stopLeScan( mLeScanCallback);
+
 
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
@@ -161,8 +162,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         });
     }
 
-
-
     @Override
     protected void onDestroy() { //koniec zadan. Wyswietlilo nam liste i starczy
         super.onDestroy();
@@ -175,7 +174,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         //
         super.onPause();// szybki start poprzedniej czynnosci - w tym przypadku skan
         BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
-        scanner.stopScan(mScanCallback);
+        scanner.stopScan((ScanCallback) mLeScanCallback);
     }
 
     @Override
@@ -205,51 +204,55 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setReportDelay(2000).setUseHardwareBatchingIfSupported(false).setUseHardwareFilteringIfSupported(false).build();
 
         final List<ScanFilter> filters = new ArrayList<>();
+
+
         filters.add(new ScanFilter.Builder().build());
-        scanner.startScan(filters, settings, mScanCallback);
+
+
+        btAdapter.startLeScan(mLeScanCallback);
 
     }
 
-        private ScanCallback mScanCallback = new ScanCallback() {
+        private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
-        @Override
-        public void onBatchScanResults(List<no.nordicsemi.android.support.v18.scanner.ScanResult> results) {
-            for (no.nordicsemi.android.support.v18.scanner.ScanResult result : results)
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
 
             {
-                // Create a new device item
-                BluetoothDevice btDevice = result.getDevice();
-                Beacon newDevice = new Beacon(btDevice.getName(), btDevice.getAddress(), result.getRssi());
-
-                // Add it to our adapter
-
-                if(newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB"))
                 {
-                    newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
-                }
-                else if(newDevice.getAddress().equals("F4:6A:1C:97:E3:D7"))
-                {
-                    newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
-                }
+                   // Create a new device item
 
-                else if(newDevice.getAddress().equals(("C1:6C:87:52:E6:83")))
-                {
-                    newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
-                }
-                BeaconStorage.ListOfBeacons.List.add(newDevice);
+                    BluetoothDevice btDevice = device;
+                    Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
+                    // Add it to our adapter
 
-                if (newDevice.getBeaconRange()== DistanceRange.Immediate)
-                {
-                   ShowPopupWindow(newDevice);
-                }
+                    if(newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB"))
+                    {
+                        newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
+                    }
+                    else if(newDevice.getAddress().equals("F4:6A:1C:97:E3:D7"))
+                    {
+                        newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
+                    }
 
+                    else if(newDevice.getAddress().equals(("C1:6C:87:52:E6:83")))
+                    {
+                        newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
+                    }
+                    BeaconStorage.ListOfBeacons.List.add(newDevice);
+
+                    if (newDevice.getBeaconRange()== DistanceRange.Immediate)
+                    {
+                       ShowPopupWindow(newDevice);
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+
+               /* super.onBatchScanResults(results);*/
             }
-            adapter.notifyDataSetChanged();
 
-            super.onBatchScanResults(results);
-        }
-
-    };
+        };
 
 
 
