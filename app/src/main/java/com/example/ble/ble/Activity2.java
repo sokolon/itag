@@ -3,72 +3,34 @@ package com.example.ble.ble;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ArrayAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
-import no.nordicsemi.android.support.v18.scanner.ScanCallback;
-import no.nordicsemi.android.support.v18.scanner.ScanFilter;
-import no.nordicsemi.android.support.v18.scanner.ScanSettings;
-
-import static com.example.ble.ble.DistanceRange.Immediate;
-import static com.example.ble.ble.R.id.toolbar;
 
 public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię Activity2, zaw w sobie AppCompatActivity
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
-    private List<String> beaconNames; // analogicznie
     private BluetoothAdapter btAdapter; // analogicznie
-    private boolean mIsScanning = false; //typ prawda/falsz
-    private Button mScanButton;
-    private Button button_scan_again; //zadeklarowałam mój button nowy który jest na activity2
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number // zmienna typu private final static int, nazwa REQUEST...(), wart =76
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
-    Boolean isScanning;
-    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -92,8 +54,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
 
         setSupportActionBar(toolbar); //zainicjowanie actionbarra
-
-        beaconNames = BeaconStorage.ListOfBeacons.BeaconNames;
 
         adapter = new CustomAdapter(BeaconStorage.ListOfBeacons.List,getApplicationContext());
 
@@ -147,7 +107,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         });
 
       /*  BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();*/
-        btAdapter.stopLeScan( mLeScanCallback);
+       /* btAdapter.stopLeScan( mLeScanCallback);*/
 
 
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -168,14 +128,17 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
     }
 
-    @Override
+   @Override
     protected void onPause() { // pausa na programie, wykorzystywane do niezapisanych
-        //zmian w trwalych danych, zatrzymanie animacji czy innych danych - procesor
-        //
-        super.onPause();// szybki start poprzedniej czynnosci - w tym przypadku skan
-        BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
-        scanner.stopScan((ScanCallback) mLeScanCallback);
-    }
+       //zmian w trwalych danych, zatrzymanie animacji czy innych danych - procesor
+
+       super.onPause();// szybki start poprzedniej czynnosci - w tym przypadku skan
+
+
+       btAdapter.stopLeScan(mLeScanCallback);
+
+   }
+
 
     @Override
     protected void onResume() { //start when is interacting with the user
@@ -195,18 +158,9 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                 return;
             }
 
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_REQ_CODE);
+           // requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_REQ_CODE);
             return; // nie wiem co sie dzieje 142-143
         }
-
-        final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
-        final ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setReportDelay(2000).setUseHardwareBatchingIfSupported(false).setUseHardwareFilteringIfSupported(false).build();
-
-        final List<ScanFilter> filters = new ArrayList<>();
-
-
-        filters.add(new ScanFilter.Builder().build());
 
 
         btAdapter.startLeScan(mLeScanCallback);
@@ -216,46 +170,31 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
             @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                // Create a new device item
 
-            {
-                {
-                   // Create a new device item
+                BluetoothDevice btDevice = device;
+                Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
+                // Add it to our adapter
 
-                    BluetoothDevice btDevice = device;
-                    Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
-                    // Add it to our adapter
-
-                    if(newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB"))
-                    {
-                        newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
-                    }
-                    else if(newDevice.getAddress().equals("F4:6A:1C:97:E3:D7"))
-                    {
-                        newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
-                    }
-
-                    else if(newDevice.getAddress().equals(("C1:6C:87:52:E6:83")))
-                    {
-                        newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
-                    }
-                    BeaconStorage.ListOfBeacons.List.add(newDevice);
-
-                    if (newDevice.getBeaconRange()== DistanceRange.Immediate)
-                    {
-                       ShowPopupWindow(newDevice);
-                    }
-
+                if (newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB")) {
+                    newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
+                } else if (newDevice.getAddress().equals("F4:6A:1C:97:E3:D7")) {
+                    newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
+                } else if (newDevice.getAddress().equals(("C1:6C:87:52:E6:83"))) {
+                    newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
                 }
+                BeaconStorage.ListOfBeacons.List.add(newDevice);
+
+                if (newDevice.getBeaconRange() == DistanceRange.Immediate) {
+                    ShowPopupWindow(newDevice);
+                }
+
                 adapter.notifyDataSetChanged();
 
-               /* super.onBatchScanResults(results);*/
+                /* super.onBatchScanResults(results);*/
             }
-
         };
-
-
-
     }
 
 
