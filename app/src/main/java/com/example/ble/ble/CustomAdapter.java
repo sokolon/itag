@@ -8,9 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import java.net.BindException;
+
 import java.util.ArrayList;
-import android.widget.ProgressBar;
 
 public class CustomAdapter extends ArrayAdapter<Beacon> {
 
@@ -31,7 +30,7 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
         TextView textViewName = convertView.findViewById(R.id.textViewName);
         ProgressBar progressBar = convertView.findViewById(R.id.distanceBar);
 
-        textViewName.setText (beacon.getName());
+        textViewName.setText(beacon.getName());
         imageView2.setBackgroundResource(beacon.getImage());
         setProgress(beacon.getBeaconRange(), progressBar);
 

@@ -2,8 +2,6 @@ package com.example.ble.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,15 +21,40 @@ public class Activity4 extends AppCompatActivity {
     public static int REQUEST_BLUETOOTH = 1;
 
     TextView distanceView;
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                if (BluetoothDevice.EXTRA_NAME == BeaconStorage.ListOfBeacons.getActiveBeacon().getName()) {
+                    int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+                    distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getRSSI())));
+                }
+            }
+        }
+    };
     ProgressBar distanceBar;
-
-    BluetoothAdapter BTAdapter;
     //BluetoothLeScanner BLEsScanner;
     //ScanCallback scan;
+    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (!device.getAddress().equals(BeaconStorage.ListOfBeacons.getActiveBeacon().Address)) {
+                    return;
+                }
 
+                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 
-
+                BeaconStorage.ListOfBeacons.getActiveBeacon().setRssi(rssi);
+                distanceView.setText(Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance()));
+                setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().getBeaconRange());
+            }
+        }
+    };
+    BluetoothAdapter BTAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +69,20 @@ public class Activity4 extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-               // BTAdapter.cancelDiscovery();
+                // BTAdapter.cancelDiscovery();
 
                 BTAdapter.startDiscovery();
-                if(BTAdapter.isDiscovering())
-                {
+                if (BTAdapter.isDiscovering()) {
                     return;
                 }
             }
         });
 
 
-
         distanceView = findViewById(R.id.distanceValueTextView);
 
-        distanceBar= findViewById(R.id.distanceBar);
-        
+        distanceBar = findViewById(R.id.distanceBar);
+
         distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance())));
         setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().beaconRange);
 
@@ -71,24 +92,9 @@ public class Activity4 extends AppCompatActivity {
 
     }
 
-    private final BroadcastReceiver receiver = new BroadcastReceiver(){
-        @Override
-        public void onReceive(Context context, Intent intent) {
+    private void setProgress(DistanceRange range) {
 
-            String action = intent.getAction();
-            if(BluetoothDevice.ACTION_FOUND.equals(action)) {
-                if(BluetoothDevice.EXTRA_NAME == BeaconStorage.ListOfBeacons.getActiveBeacon().getName()){
-                    int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-                    distanceView.setText((Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getRSSI())));
-                }
-            }
-        }
-    };
-
-    private void setProgress(DistanceRange range){
-        
-        switch (range)
-        {
+        switch (range) {
             case Far:
                 distanceBar.setProgress(33);
                 break;
@@ -98,8 +104,8 @@ public class Activity4 extends AppCompatActivity {
             case Immediate:
                 distanceBar.setProgress(100);
                 break;
-                default:
-                    throw new IndexOutOfBoundsException("Did not implenent " + range);
+            default:
+                throw new IndexOutOfBoundsException("Did not implenent " + range);
         }
     }
 
@@ -130,25 +136,6 @@ public class Activity4 extends AppCompatActivity {
             BTAdapter.startDiscovery();
         }
     }
-
-    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(!device.getAddress().equals(BeaconStorage.ListOfBeacons.getActiveBeacon().Address))
-                {
-                    return;
-                }
-
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-
-                BeaconStorage.ListOfBeacons.getActiveBeacon().setRssi(rssi);
-                distanceView.setText(Double.toString(BeaconStorage.ListOfBeacons.getActiveBeacon().getDistance()));
-                setProgress(BeaconStorage.ListOfBeacons.getActiveBeacon().getBeaconRange());
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {

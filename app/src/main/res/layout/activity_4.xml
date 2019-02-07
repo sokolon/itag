@@ -26,18 +26,18 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/distanceBar"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
         android:text="Distance"
-        android:textSize="20sp"
-        android:layout_alignParentLeft="true" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/distanceValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_marginTop="421dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="421dp" />
+        android:textSize="20sp" />
 
 
     <ProgressBar

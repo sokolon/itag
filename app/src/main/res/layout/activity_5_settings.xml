@@ -31,8 +31,8 @@
         android:layout_width="409dp"
         android:layout_height="38dp"
         android:text="Set distances"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="145dp"
+        android:textColor="@color/text_color"
         android:textSize="15sp"
-        android:textColor="@color/text_color"/>
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="145dp" />
 </android.support.constraint.ConstraintLayout>

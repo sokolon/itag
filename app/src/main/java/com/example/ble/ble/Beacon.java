@@ -1,7 +1,6 @@
 package com.example.ble.ble;
 
 import java.util.UUID;
-import java.util.jar.Attributes;
 
 public class Beacon {
 
@@ -15,8 +14,7 @@ public class Beacon {
     DistanceRange beaconRange;
 
     public Beacon(String name, String address, int rssi) {
-        if(name == null || name.isEmpty())
-        {
+        if (name == null || name.isEmpty()) {
             name = address;
         }
 
@@ -27,20 +25,19 @@ public class Beacon {
         SetBeaconRange();
     }
 
-    private void SetBeaconRange(){
-        if(this.Rssi > -60)
-        {
+    private void SetBeaconRange() {
+        if (this.Rssi > -60) {
             beaconRange = DistanceRange.Immediate;
         } else if (this.Rssi > -60) {
             beaconRange = DistanceRange.Near;
-        } else if (this.Rssi > -100){
+        } else if (this.Rssi > -100) {
             beaconRange = DistanceRange.Far;
         } else {
             beaconRange = DistanceRange.FarerThanFar;
         }
     }
 
-    private double ConvertRssiToDistance(){
+    private double ConvertRssiToDistance() {
         // TODO Verify it
         int txPower = -55;
 
@@ -48,24 +45,25 @@ public class Beacon {
 
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
-    public int getRSSI() { return Rssi; }
 
-    public void setRssi(int rssi){
-        Rssi = rssi;
-        SetBeaconRange();
+    public int getRSSI() {
+        return Rssi;
     }
 
-    public String getDescription() { return Description;}
+    public String getDescription() {
+        return Description;
+    }
 
     public UUID getUUID() {
         return UUID;
     }
 
-    public String getAddress() { return Address;}
+    public String getAddress() {
+        return Address;
+    }
 
     public double getDistance() {
         return Math.round(Distance * 100.0) / 100.0;
@@ -75,8 +73,7 @@ public class Beacon {
         return beaconRange;
     }
 
-    public void AssignBeacon(String description, int imageID, String name)
-    {
+    public void AssignBeacon(String description, int imageID, String name) {
         this.Description = description;
         this.ImageID = imageID;
         this.name = name;
@@ -86,5 +83,12 @@ public class Beacon {
         return ImageID;
     }
 
-    public int getRssi() { return this.Rssi; }
+    public int getRssi() {
+        return this.Rssi;
+    }
+
+    public void setRssi(int rssi) {
+        Rssi = rssi;
+        SetBeaconRange();
+    }
 }
