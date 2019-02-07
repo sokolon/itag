@@ -327,7 +327,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                     }
 
                     if (BATTERY_SERVICE.equals(service.getUuid())) {
-                        batteryCharacteristic = service.getCharacteristics().get(0);
+                        batteryCharact5eristic = service.getCharacteristics().get(0);
                         gatt.readCharacteristic(batteryCharacteristic);
                     }
 
@@ -397,7 +397,9 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                 };
                 handler.postDelayed(r, delayDoubleClick);
             }
-        }
+        });
+    }
 }
+
 
 
