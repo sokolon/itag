@@ -78,7 +78,7 @@ public class ITagService extends Service {
     }
 
 
-    private void connect(String address) {
+    public void connect(String address) {
         BluetoothDevice mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
         BluetoothGatt gat = mDevice.connectGatt(this, true, new CustomBluetoothGattCallback(address));
 
