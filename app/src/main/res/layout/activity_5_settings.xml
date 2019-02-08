@@ -5,14 +5,14 @@
     android:layout_height="match_parent">
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/turn_on_of"
         android:layout_width="409dp"
         android:layout_height="64dp"
         android:layout_weight="1"
         android:text="Turn alarm on/off" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/do_not_disturb"
         android:layout_width="409dp"
         android:layout_height="64dp"
         android:text="Do not disturb"
@@ -20,14 +20,14 @@
         tools:layout_editor_absoluteY="64dp" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/alarm_meters"
         android:layout_width="409dp"
         android:layout_height="64dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="183dp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/set_distances"
         android:layout_width="409dp"
         android:layout_height="38dp"
         android:text="Set distances"

@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="text_color">#000000</color>
+    <color name="listView_color">#000000</color>
+    <color name="Name">#000000</color>
+    <color name="Far">#000000</color>
+    <color name="Near">#000000</color>
+    <color name="At_iTag">#000000</color>
 </resources>
