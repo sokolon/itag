@@ -9,4 +9,17 @@
     <color name="Far">#000000</color>
     <color name="Near">#000000</color>
     <color name="At_iTag">#000000</color>
+    <color name="ColorGrey">#FFFFFF</color>
+
+    <color name="colorGreyLight">#d4878787</color>
+    <color name="colorGreyLight2">#e9e9e9</color>
+
+    <color name="colorAccent1">#ca051f</color>
+    <color name="colorAccent2">#b6041c</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGrey">#FF0000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhiteMask2">#53ffffff</color>
+    <color name="colorGreen">#FF4AA13E</color>
+    <color name="colorRed">	#FF0000</color>
 </resources>
