@@ -26,12 +26,12 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(R.layout.customlayout, parent, false);
 
-        ImageView imageView2 = convertView.findViewById(R.id.imageView2);
+        //ImageView imageView2 = convertView.findViewById(R.id.imageView2);
         TextView textViewName = convertView.findViewById(R.id.textViewName);
         ProgressBar progressBar = convertView.findViewById(R.id.distanceBar);
 
         textViewName.setText(beacon.getName());
-        imageView2.setBackgroundResource(beacon.getImage());
+        //imageView2.setBackgroundResource(beacon.getImage());
         setProgress(beacon.getBeaconRange(), progressBar);
 
         return convertView;
