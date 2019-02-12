@@ -17,17 +17,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+import java.util.Collection;
+
 
 public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię Activity2, zaw w sobie AppCompatActivity
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number // zmienna typu private final static int, nazwa REQUEST...(), wart =76
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
-    private BluetoothAdapter btAdapter; // analogicznie
+    private BluetoothAdapter btAdapter; // analogiczni
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -63,9 +67,9 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //onItemClick - klikanie na itemy
-                // bedace na naszej activity
+                                                                    // bedace na naszej activity
 
-                BeaconStorage.ListOfBeacons.ActiveId = l; // lista beacnow
+                BeaconStorage.ListOfBeacons.ActiveId = l;           // lista beacnow
                 openActivity3(view);
             }
         });
@@ -116,6 +120,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         });
     }
+
 
     @Override
     protected void onDestroy() { //koniec zadan. Wyswietlilo nam liste i starczy
@@ -191,6 +196,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
             adapter.notifyDataSetChanged();
         }
     };
+
+
 }
 
 

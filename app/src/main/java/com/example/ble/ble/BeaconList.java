@@ -28,4 +28,6 @@ public class BeaconList extends ArrayList<Beacon> {
         }
         return super.add(beacon); //dodanie elementu do listy
     }
+
+
 }
