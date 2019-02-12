@@ -1,8 +1,10 @@
 package com.example.ble.ble;
 
+import android.support.annotation.NonNull;
+
 import java.util.UUID;
 
-public class Beacon {
+public class Beacon implements Comparable<Beacon>{
 
     java.util.UUID UUID;
     String name;
@@ -22,19 +24,6 @@ public class Beacon {
         this.name = name;
         this.Address = address;
         this.Rssi = rssi;
-        SetBeaconRange();
-    }
-
-    private void SetBeaconRange() {
-        if (this.Rssi > -60) {
-            beaconRange = DistanceRange.Immediate;
-        } else if (this.Rssi > -60) {
-            beaconRange = DistanceRange.Near;
-        } else if (this.Rssi > -100) {
-            beaconRange = DistanceRange.Far;
-        } else {
-            beaconRange = DistanceRange.FarerThanFar;
-        }
     }
 
     private double ConvertRssiToDistance() {
@@ -70,7 +59,15 @@ public class Beacon {
     }
 
     public DistanceRange getBeaconRange() {
-        return beaconRange;
+        if (this.Rssi > -60) {
+            return beaconRange = DistanceRange.Immediate;
+        } else if (this.Rssi > -80) {
+            return beaconRange = DistanceRange.Near;
+        } else if (this.Rssi > -100) {
+            return beaconRange = DistanceRange.Far;
+        } else {
+            return beaconRange = DistanceRange.FarerThanFar;
+        }
     }
 
     public void AssignBeacon(String description, int imageID, String name) {
@@ -89,6 +86,19 @@ public class Beacon {
 
     public void setRssi(int rssi) {
         Rssi = rssi;
-        SetBeaconRange();
+    }
+
+    @Override
+    public int compareTo(@NonNull Beacon o) {
+        if (this.beaconRange.getValue() < o.beaconRange.getValue()){
+            return 1;
+        }
+
+        if (this.beaconRange.getValue() == o.beaconRange.getValue())
+        {
+            return 0;
+        }
+
+        return -1;
     }
 }

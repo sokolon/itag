@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 import java.util.Collection;
+import java.util.Collections;
 
 
 public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię Activity2, zaw w sobie AppCompatActivity
@@ -192,6 +193,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
             if (newDevice.getBeaconRange() == DistanceRange.Immediate) {
                 ShowPopupWindow(newDevice);
             }
+
+            Collections.sort(BeaconStorage.ListOfBeacons.List);
 
             adapter.notifyDataSetChanged();
         }
