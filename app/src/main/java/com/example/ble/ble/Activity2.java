@@ -4,14 +4,18 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,8 +38,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private BluetoothAdapter btAdapter; // analogicznie
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
         super.onCreate(savedInstanceState); //jesli chcemy dziedziczyc w javie klasy, aby wykonac metode klasy nalezy uzyc metody super.onCreate
@@ -44,7 +46,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                     Toast.LENGTH_SHORT).show(); // długość czasu trwania tej informacji
             finish();
         }
-
 
 
         final BluetoothManager bluetoothManager =
@@ -185,25 +186,17 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            
             // Create a new device item
+            if (device.getName() == null || !device.getName().toLowerCase().equals("itag"))
+            {
+                return;
+            }
 
-            Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
             // Add it to our adapter
+            Beacon newDevice = new Beacon(device.getName(), device.getAddress(), rssi);
 
-            if (newDevice.getAddress().equals("F6:8E:A3:B4:D7:FB")) {
-                newDevice.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
-            } else if (newDevice.getAddress().equals("F4:6A:1C:97:E3:D7")) {
-                newDevice.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");
-            } else if (newDevice.getAddress().equals(("C1:6C:87:52:E6:83"))) {
-                newDevice.AssignBeacon("The best RFID gate", R.drawable.bramkarfid, "Gate RFID");
-            }
             BeaconStorage.ListOfBeacons.List.add(newDevice);
-
-            if (newDevice.getBeaconRange() == DistanceRange.Immediate) {
-                ShowPopupWindow(newDevice);
-            }
-
-            Collections.sort(BeaconStorage.ListOfBeacons.List);
 
             adapter.notifyDataSetChanged();
         }

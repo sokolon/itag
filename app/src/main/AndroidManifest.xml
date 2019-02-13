@@ -18,6 +18,10 @@
         android:roundIcon="@mipmap/icon_rounded_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".ITagService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <activity
             android:name=".MainActivity1"
@@ -40,13 +44,7 @@
         <activity
             android:name=".Activity4"
             android:label="@string/title_activity_4"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-
-
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
 
 </manifest>

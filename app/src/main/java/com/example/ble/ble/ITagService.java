@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -74,23 +75,48 @@ public class ITagService extends Service {
     private Runnable trackRemoteRssi = null;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreate()");
+        broadcaster = LocalBroadcastManager.getInstance(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (trackRemoteRssi != null) {
+            handler.removeCallbacks(trackRemoteRssi);
+        }
+
+        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return myBinder;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        this.connect(intent.getData().getHost());
 
-    public void connect(String address) {
-        BluetoothDevice mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
-        BluetoothGatt gat = mDevice.connectGatt(this, true, new CustomBluetoothGattCallback(address));
-
-        for (BluetoothGattService service : gat.getServices()) {
-            if (service.getUuid().equals(IMMEDIATE_ALERT_SERVICE)) {
-                final BluetoothGattCharacteristic characteristic = service.getCharacteristics().get(0);
-                characteristic.setValue(HIGH_ALERT, BluetoothGattCharacteristic.FORMAT_UINT8, 0);
-                gat.writeCharacteristic(characteristic);
-            }
+        if (intent.getData() != null) {
+            final String address = intent.getData().getHost();
+            this.immediateAlert(address, HIGH_ALERT);
         }
 
+        return START_STICKY;
+    }
+
+    public void connect(String address) {
+        if (!bluetoothGatt.containsKey(address) || bluetoothGatt.get(address) == null) {
+            Log.d(TAG, "connect() - (new link) to device " + address);
+            mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
+            BluetoothGatt lol1 = bluetoothGatt.put(address, mDevice.connectGatt(this, true, new CustomBluetoothGattCallback(address)));
+        } else {
+            Log.d(TAG, "connect() - discovering services for " + address);
+            boolean lol = bluetoothGatt.get(address).discoverServices();
+        }
     }
 
     private void setCharacteristicNotification(BluetoothGatt bluetoothgatt, BluetoothGattCharacteristic bluetoothgattcharacteristic, boolean flag) {
@@ -145,8 +171,6 @@ public class ITagService extends Service {
 
         return null;
     }
-
-
 
     private class CustomBluetoothGattCallback extends BluetoothGattCallback {
 
