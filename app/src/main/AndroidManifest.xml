@@ -42,6 +42,7 @@
             android:label="@string/title_activity_4"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
     </application>
 
 
