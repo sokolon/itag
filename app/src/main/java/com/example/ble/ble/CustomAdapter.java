@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -78,7 +76,12 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
 
         Button alertButton = convertView.findViewById(R.id.button_alert);
-        //alertButton.setOnClickListener(service.enablePeerDeviceNotifyMe(beacon.Address);
+        alertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                service.immediateAlert(beacon.Address, ITagService.HIGH_ALERT);
+            }
+        });
 
         return convertView;
     }

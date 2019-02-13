@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -99,6 +100,32 @@ public class ITagService extends Service {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             bluetoothgatt.writeDescriptor(descriptor);
         }
+    }
+
+    public void setLinkLossNotificationLevel(String address, int alertType) {
+        Log.d(TAG, "setLinkLossNotificationLevel() - the device " + address);
+        if (bluetoothGatt.get(address) == null || linkLossService == null || linkLossService.getCharacteristics() == null || linkLossService.getCharacteristics().size() == 0) {
+            somethingGoesWrong();
+            return;
+        }
+        final BluetoothGattCharacteristic characteristic = linkLossService.getCharacteristics().get(0);
+        characteristic.setValue(alertType, BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+        bluetoothGatt.get(address).writeCharacteristic(characteristic);
+    }
+
+    public void immediateAlert(String address, int alertType) {
+        Log.d(TAG, "immediateAlert() - the device " + address);
+        if (bluetoothGatt.get(address) == null || immediateAlertService == null || immediateAlertService.getCharacteristics() == null || immediateAlertService.getCharacteristics().size() == 0) {
+            somethingGoesWrong();
+            return;
+        }
+        final BluetoothGattCharacteristic characteristic = immediateAlertService.getCharacteristics().get(0);
+        characteristic.setValue(alertType, BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+        bluetoothGatt.get(address).writeCharacteristic(characteristic);
+    }
+
+    private synchronized void somethingGoesWrong() {
+        Toast.makeText(this, "Something goes wrong!", Toast.LENGTH_LONG).show();
     }
 
     public void enablePeerDeviceNotifyMe(BluetoothGatt bluetoothgatt, boolean flag) {
