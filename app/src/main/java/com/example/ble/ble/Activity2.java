@@ -32,7 +32,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number // zmienna typu private final static int, nazwa REQUEST...(), wart =76
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
-    private BluetoothAdapter btAdapter; // analogiczni
+    private BluetoothAdapter btAdapter; // analogicznie
 
 
 
@@ -61,7 +61,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         setSupportActionBar(toolbar); //zainicjowanie actionbarra
 
-        
+
 
         adapter = new CustomAdapter(BeaconStorage.ListOfBeacons.List, getApplicationContext());
 
