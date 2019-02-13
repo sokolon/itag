@@ -24,14 +24,14 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
     private ITagService service;
 
+    private Beacon beacon;
+
     public CustomAdapter(ArrayList<Beacon> data, Context context) {
 
         super(context, R.layout.customlayout, data);
 
         context.bindService(new Intent(context, ITagService.class), serviceConnection, BIND_AUTO_CREATE);
     }
-
-    private ITagService service;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -53,7 +53,7 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        Beacon beacon = getItem(position);
+        beacon = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -69,10 +69,16 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
 
         Button connectButton = convertView.findViewById(R.id.button_connect);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                service.connect(beacon.Address);
+            }
+        });
 
 
         Button alertButton = convertView.findViewById(R.id.button_alert);
-
+        //alertButton.setOnClickListener(service.enablePeerDeviceNotifyMe(beacon.Address);
 
         return convertView;
     }
