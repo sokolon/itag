@@ -33,6 +33,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private BluetoothAdapter btAdapter; // analogiczni
+    Button set;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -42,6 +43,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                     Toast.LENGTH_SHORT).show(); // długość czasu trwania tej informacji
             finish();
         }
+
+
 
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -120,6 +123,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
             }
 
         });
+
     }
 
 
@@ -151,9 +155,18 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         super.onResume();
     }
 
+    Button
+
     public void openActivity3(View view) {
         Intent intent = new Intent(this, Activity3.class);
         startActivity(intent);
+    }
+
+
+    public void openActivity5_Settings(View view){
+        Intent intent = new Intent(this, Activity5_settings.class);
+        startActivity(intent);
+
     }
 
     private void scanLeDevice() { //startScan - a dalej 136-139 ne wiem co sie dzieje
