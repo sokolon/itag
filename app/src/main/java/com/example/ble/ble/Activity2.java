@@ -66,6 +66,14 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         list.setAdapter(adapter);
 
+        btn_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openActivity5_Settings(view);
+            }
+
+        });
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
@@ -165,7 +173,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     public void openActivity5_Settings(View view){
         Intent intent = new Intent(this, Activity5_settings.class);
         startActivity(intent);
-
     }
 
     private void scanLeDevice() { //startScan - a dalej 136-139 ne wiem co sie dzieje
