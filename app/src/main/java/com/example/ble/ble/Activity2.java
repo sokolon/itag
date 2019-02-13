@@ -186,7 +186,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            
+
             // Create a new device item
             if (device.getName() == null || !device.getName().toLowerCase().equals("itag"))
             {

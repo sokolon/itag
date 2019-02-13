@@ -22,8 +22,6 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
     private ITagService service;
 
-    private Beacon beacon;
-
     public CustomAdapter(ArrayList<Beacon> data, Context context) {
 
         super(context, R.layout.customlayout, data);
@@ -51,7 +49,7 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        beacon = getItem(position);
+        Beacon beacon = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -67,24 +65,43 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
 
         Button connectButton = convertView.findViewById(R.id.button_connect);
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                service.connect(beacon.Address);
-            }
-        });
+        connectButton.setOnClickListener(new ConnectBeacon(beacon.getAddress()));
 
 
         Button alertButton = convertView.findViewById(R.id.button_alert);
-        alertButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                service.immediateAlert(beacon.Address, ITagService.HIGH_ALERT);
-            }
-        });
+        alertButton.setOnClickListener(new CallAlarm(beacon.getAddress()));
 
         return convertView;
     }
+
+    public class ConnectBeacon implements View.OnClickListener {
+
+        private String adr;
+        ConnectBeacon(String address)
+        {
+            adr = address;
+        }
+
+        @Override
+        public void onClick(View v) {
+            service.connect(adr);
+        }
+    }
+
+    public class CallAlarm implements View.OnClickListener {
+
+        private String adr;
+        CallAlarm(String address)
+        {
+            adr = address;
+        }
+
+        @Override
+        public void onClick(View v) {
+            service.immediateAlert(adr, ITagService.HIGH_ALERT);
+        }
+    }
+
 
 
     private void setProgress(DistanceRange range, ProgressBar progressBar) {
