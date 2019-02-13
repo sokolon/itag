@@ -33,7 +33,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private BluetoothAdapter btAdapter; // analogiczni
-    Button btn_setting;
+    Button btn_setting; // nanananannanananna
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
