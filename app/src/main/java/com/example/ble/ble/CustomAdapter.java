@@ -2,8 +2,10 @@ package com.example.ble.ble;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +18,20 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 public class CustomAdapter extends ArrayAdapter<Beacon> {
 
     private ITagService service;
 
     public CustomAdapter(ArrayList<Beacon> data, Context context) {
+
         super(context, R.layout.customlayout, data);
+
+        context.bindService(new Intent(context, ITagService.class), serviceConnection, BIND_AUTO_CREATE);
     }
+
+    private ITagService service;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
