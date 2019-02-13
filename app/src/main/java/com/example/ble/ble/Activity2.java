@@ -33,7 +33,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private BluetoothAdapter btAdapter; // analogiczni
-    Button btn_setting; // nanananannanananna
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -59,6 +60,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
 
         setSupportActionBar(toolbar); //zainicjowanie actionbarra
+
+        
 
         adapter = new CustomAdapter(BeaconStorage.ListOfBeacons.List, getApplicationContext());
 
@@ -161,12 +164,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         startActivity(intent);
     }
 
-
-    public void openActivity5_Settings(View view){
-        Intent intent = new Intent(this, Activity5_settings.class);
-        startActivity(intent);
-
-    }
 
     private void scanLeDevice() { //startScan - a dalej 136-139 ne wiem co sie dzieje
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
