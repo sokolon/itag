@@ -45,7 +45,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         }
 
 
-
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = bluetoothManager.getAdapter(); //jakiś manager, punkt zarządzania urządzeniami bluetooth który jest niezbędny do wyszukiwania i zarządzania bluetooth
@@ -56,7 +55,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         }
         setContentView(R.layout.activity_2);
         Toolbar toolbar = findViewById(R.id.toolbar); //76-76 powiazanie xml z metodami (funkcja-wyglad)
-
 
         setSupportActionBar(toolbar); //zainicjowanie actionbarra
 
@@ -126,7 +124,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
     }
 
-
     @Override
     protected void onDestroy() { //koniec zadan. Wyswietlilo nam liste i starczy
         super.onDestroy();
@@ -160,13 +157,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         Intent intent = new Intent(this, Activity3.class);
         startActivity(intent);
     }
+    
 
-
-    public void openActivity5_Settings(View view){
-        Intent intent = new Intent(this, Activity5_settings.class);
-        startActivity(intent);
-
-    }
 
     private void scanLeDevice() { //startScan - a dalej 136-139 ne wiem co sie dzieje
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
