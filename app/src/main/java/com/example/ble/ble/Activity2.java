@@ -37,6 +37,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
     public static int REQUEST_BLUETOOTH = 1; //analogicznie
     private CustomAdapter adapter;  // zmienna/atrybut klasy, typu private, nazwa Adapter, typ Array, wartosc=znak adapter
     private BluetoothAdapter btAdapter; // analogicznie
+    private Button btn_settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //metoda onCreate - tu zaczyna się poelcenie skanowania
@@ -46,7 +47,6 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
                     Toast.LENGTH_SHORT).show(); // długość czasu trwania tej informacji
             finish();
         }
-
 
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -60,8 +60,8 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         Toolbar toolbar = findViewById(R.id.toolbar); //76-76 powiazanie xml z metodami (funkcja-wyglad)
 
 
-        setSupportActionBar(toolbar); //zainicjowanie actionbarra
 
+        setSupportActionBar(toolbar); //zainicjowanie actionbarra
 
 
         adapter = new CustomAdapter(BeaconStorage.ListOfBeacons.List, getApplicationContext());
@@ -75,7 +75,7 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //onItemClick - klikanie na itemy
-                                                                    // bedace na naszej activity
+                // bedace na naszej activity
 
                 BeaconStorage.ListOfBeacons.ActiveId = l;           // lista beacnow
                 openActivity3(view);
@@ -164,6 +164,10 @@ public class Activity2 extends AppCompatActivity { //tworzymy klasę o nazwię A
         Intent intent = new Intent(this, Activity3.class);
         startActivity(intent);
     }
+
+    public void buttonClick(View view){
+        Intent mintent = new Intent(Activity2.this, ActivitySettings.class);
+        startActivity(mintent);}
 
 
     private void scanLeDevice() { //startScan - a dalej 136-139 ne wiem co sie dzieje
