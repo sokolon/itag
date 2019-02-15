@@ -5,6 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorRed"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        tools:layout_editor_absoluteY="0dp"
+        tools:title="Settings" />
     <Switch
         android:id="@+id/switch1"
         android:layout_width="324dp"
