@@ -77,11 +77,9 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="604dp"
         android:text="Far"
         android:textColor="@color/Far"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textViewNear"
         app:layout_constraintHorizontal_bias="0.69"
         app:layout_constraintStart_toStartOf="@+id/distanceBar"
@@ -95,34 +93,29 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="500dp"
         android:text="Near"
         android:textColor="@color/Near"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/barrier2"
         app:layout_constraintEnd_toStartOf="@+id/textViewAtBeacon"
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toEndOf="@+id/textViewFar"
-        app:layout_constraintTop_toBottomOf="@+id/distanceBar"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintTop_toBottomOf="@+id/distanceBar" />
 
     <TextView
         android:id="@+id/textViewAtBeacon"
         android:layout_width="48dp"
-        android:layout_height="15dp"
+        android:layout_height="17dp"
         android:layout_alignBottom="@+id/textViewFar"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="12dp"
         android:text="At iTag"
         android:textColor="@color/At_iTag"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/distanceBar"
-        app:layout_constraintTop_toBottomOf="@+id/distanceBar"
-        app:layout_constraintVertical_bias="0.016" />
+        app:layout_constraintEnd_toStartOf="@+id/button_alert"
+        app:layout_constraintTop_toBottomOf="@+id/distanceBar" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barrier2"
