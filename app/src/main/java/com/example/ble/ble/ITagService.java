@@ -201,6 +201,7 @@ public class ITagService extends Service {
                 Log.d(TAG, "onConnectionStateChange() address: " + address + " newState => " + newState);
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     broadcaster.sendBroadcast(new Intent(GATT_CONNECTED));
+                    gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
                     gatt.discoverServices();
                 }
 
@@ -230,6 +231,7 @@ public class ITagService extends Service {
 
         @Override
         public void onServicesDiscovered(final BluetoothGatt gatt, int status) {
+            gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
             Log.d(TAG, "onServicesDiscovered()");
 
             launchTrackingRemoteRssi(gatt);
