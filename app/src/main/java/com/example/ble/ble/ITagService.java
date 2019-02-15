@@ -11,11 +11,14 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -73,6 +76,8 @@ public class ITagService extends Service {
 
     private Runnable trackRemoteRssi = null;
 
+    private Button button_connect;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -128,8 +133,6 @@ public class ITagService extends Service {
         } else {
             Log.d(TAG, "connect() - discovering services for " + address);
             bluetoothGatt.get(address).discoverServices();
-           /* Handler msecondHandler = new Handler();
-            msecondHandler.postDelayed(new Discovering(address) { },3000);*/
         }
     }
 
@@ -194,6 +197,7 @@ public class ITagService extends Service {
             this.address = address;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             Log.d(TAG, "onConnectionStateChange() address: " + address + " status => " + status);
@@ -234,6 +238,9 @@ public class ITagService extends Service {
             gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
             Log.d(TAG, "onServicesDiscovered()");
 
+            Toast.makeText(ITagService.this, "Connected!", Toast.LENGTH_LONG).show();
+
+
             launchTrackingRemoteRssi(gatt);
 
             broadcaster.sendBroadcast(new Intent(SERVICES_DISCOVERED));
@@ -241,8 +248,8 @@ public class ITagService extends Service {
 
                 for (String action : Preferences.getActionConnected(getApplicationContext(), this.address)) {
                     sendAction(Preferences.Source.connected, action);
-                }
 
+                }
                 for (BluetoothGattService service : gatt.getServices()) {
 
                     Log.d(TAG, "service discovered: " + service.getUuid());
@@ -273,6 +280,9 @@ public class ITagService extends Service {
                 enablePeerDeviceNotifyMe(gatt, true);
             }
         }
+
+
+
 
         private void launchTrackingRemoteRssi(final BluetoothGatt gatt) {
             if (trackRemoteRssi != null) {

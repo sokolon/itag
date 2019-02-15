@@ -31,12 +31,15 @@ public class CustomAdapter extends ArrayAdapter<Beacon> {
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder)
-        {
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             if (iBinder instanceof ITagService.BackgroundBluetoothLEBinder) {
                 service = ((ITagService.BackgroundBluetoothLEBinder) iBinder).service();
             }
+
+
         }
+
+
 
         @Override
         public void onServiceDisconnected(ComponentName componentName)
