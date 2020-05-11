@@ -19,7 +19,7 @@ public class BeaconList extends ArrayList<Beacon> {
 
         }
 
-        if (beacon.getAddress().equals("F6:8E:A3:B4:D7:FB")) {
+        if (beacon.getAddress().equals("FC:58:FA:59:6F:B8")) {
             beacon.AssignBeacon("The best seal!", R.drawable.newproduct, "Seal");
         } else if (beacon.getAddress().equals("F4:6A:1C:97:E3:D7")) {
             beacon.AssignBeacon("Business card", R.drawable.kodqrkarol, "Karol Szostak");

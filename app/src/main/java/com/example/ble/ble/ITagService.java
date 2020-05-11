@@ -238,7 +238,7 @@ public class ITagService extends Service {
             gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED);
             Log.d(TAG, "onServicesDiscovered()");
 
-            Toast.makeText(ITagService.this, "Connected!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(ITagService.this, "Connected!", Toast.LENGTH_LONG).show();
 
 
             launchTrackingRemoteRssi(gatt);
